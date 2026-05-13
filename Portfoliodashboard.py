@@ -68,7 +68,6 @@ with col1:
         <div class="goal-card">
             <h1 style='color: #1f3b4d; font-size: 2.5rem;'>FINANCIAL GOAL: RETIREMENT 2045</h1>
             <p style='font-size: 1.2rem; color: #666;'>Status: Dein Ziel ist auf Kurs. Bleib diszipliniert!</p>
-            <h2 style='color: #2ecc71;'>Aktueller Stand: {current_value:,.2f} €</h2>
         </div>
         """, unsafe_allow_html=True)
     
@@ -94,8 +93,8 @@ with col2:
     
     # Donut-Chart (Beispieldaten basierend auf deinem Portfolio)
     chart_data = pd.DataFrame({
-        'Asset': ['Global ETFs', 'USA', 'Japan', 'Sweden', 'Asia/Europe'],
-        'Value': [45, 15, 10, 10, 20]
+        'Asset': ['Nordamerika', 'Europa', 'Asien-Pazifik'],
+        'Value': [50, 30, 20]
     })
     
     fig = px.pie(chart_data, values='Value', names='Asset', hole=0.5,
