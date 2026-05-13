@@ -25,7 +25,7 @@ def get_portfolio_value():
             total_val += (price * shares)
     except Exception as e:
         st.error(f"Fehler beim Laden der Live-Kurse: {e}")
-        return 72000
+        return 0
         
     return total_val
 
@@ -59,12 +59,12 @@ progress_pct = min(current_value / goal_value, 1.0)
 # Die große Goal-Card
 st.markdown(f"""
     <div class="goal-card">
-        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Altersvorsorge</h1>
+        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Rente 2068</h1>
     </div>
     """, unsafe_allow_html=True)
     
 # Der abgerundete Fortschrittsbalken
-st.write(f"### {int(progress_pct*100)}% ACHIEVED")
+st.write(f"### {int(progress_pct*100)}% Erreicht")
 st.progress(progress_pct)
     
 st.markdown("---")
