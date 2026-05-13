@@ -58,54 +58,29 @@ current_value = get_portfolio_value()
 progress_pct = min(current_value / goal_value, 1.0) # Begrenzt auf max 100%
 
 # --- LAYOUT: ZWEI SPALTEN ---
-col1, col2 = st.columns([1.5, 1])
-
-with col1:
-    st.subheader("System 1: Behavioral Goal Tracking")
+st.subheader("System 1: Behavioral Goal Tracking")
     
     # Die große Goal-Card
-    st.markdown(f"""
-        <div class="goal-card">
-            <h1 style='color: #1f3b4d; font-size: 2.5rem;'>FINANCIAL GOAL: RETIREMENT 2045</h1>
-            <p style='font-size: 1.2rem; color: #666;'>Status: Dein Ziel ist auf Kurs. Bleib diszipliniert!</p>
-        </div>
-        """, unsafe_allow_html=True)
+st.markdown(f"""
+    <div class="goal-card">
+        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>FINANCIAL GOAL: RETIREMENT 2045</h1>
+        <p style='font-size: 1.2rem; color: #666;'>Status: Dein Ziel ist auf Kurs. Bleib diszipliniert!</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Der abgerundete Fortschrittsbalken
-    st.write(f"### {int(progress_pct*100)}% ACHIEVED")
-    st.progress(progress_pct)
+st.write(f"### {int(progress_pct*100)}% ACHIEVED")
+st.progress(progress_pct)
     
-    st.markdown("---")
+st.markdown("---")
     
     # Milestone Timeline
-    st.write("### Milestone Timeline")
-    milestones = {
-        "Tier 1 (Emergency Fund)": "DONE ✅",
-        "Tier 2 (Core Capital)": "DONE ✅",
-        "Tier 3 (Growth)": "IN PROGRESS 🔵",
-        "Tier 4 (Financial Freedom)": "FUTURE ⚪"
-    }
-    for m, status in milestones.items():
-        st.write(f"**{m}**: {status}")
-
-with col2:
-    st.subheader("Asset Allocation")
-    
-    # Donut-Chart (Beispieldaten basierend auf deinem Portfolio)
-    chart_data = pd.DataFrame({
-        'Asset': ['Nordamerika', 'Europa', 'Asien-Pazifik'],
-        'Value': [50, 30, 20]
-    })
-    
-    fig = px.pie(chart_data, values='Value', names='Asset', hole=0.5,
-                 color_discrete_sequence=px.colors.sequential.RdBu)
-    fig.update_layout(showlegend=True, margin=dict(t=0, b=0, l=0, r=0))
-    st.plotly_chart(fig, use_container_width=True)
-
-    # Actionable Insights
-    st.info("""
-    **Actionable Insights:**
-    * Sparrate beibehalten.
-    * Kein Rebalancing in diesem Quartal nötig.
-    * Fokus auf das Zieljahr 2045 richten.
-    """)
+st.write("### Milestone Timeline")
+milestones = {
+    "Tier 1 (Emergency Fund)": "DONE ✅",
+    "Tier 2 (Core Capital)": "DONE ✅",
+    "Tier 3 (Growth)": "IN PROGRESS 🔵",
+    "Tier 4 (Financial Freedom)": "FUTURE ⚪"
+}
+for m, status in milestones.items():
+    st.write(f"**{m}**: {status}")
