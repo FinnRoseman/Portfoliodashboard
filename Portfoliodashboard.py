@@ -46,18 +46,15 @@ st.title("Behavioral Finance Dashboard")
 goal_value = 500000 
 current_value = get_portfolio_value()
 progress_pct = min(current_value / goal_value, 1.0) 
-
-st.subheader("System 1: Behavioral Goal Tracking")
 st.markdown(f"""
     <div class="goal-card">
-        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>FINANCIAL GOAL: RETIREMENT 2045</h1>
-        <p style='font-size: 1.2rem; color: #666;'>Status: Dein Ziel ist auf Kurs. Bleib diszipliniert!</p>
+        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Rente 2068</h1>
         <h2 style='color: #2ecc71;'>Aktueller Stand: {current_value:,.2f} €</h2>
     </div>
     """, unsafe_allow_html=True)
     
 # Der abgerundete Fortschrittsbalken
-st.write(f"### {int(progress_pct*100)}% ACHIEVED")
+st.write(f"### {int(progress_pct*100)}% Geschafft")
 st.progress(progress_pct)  
 st.markdown("---")
     
