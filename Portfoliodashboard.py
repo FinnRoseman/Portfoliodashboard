@@ -8,25 +8,15 @@ st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 # --- FUNKTION: LIVE-KURSE LADEN (EURO-TICKER) ---
 def get_portfolio_value():
     euro_portfolio = {
-        "5MVL.DE": 6.58,  
-        "XD9U.DE": 9.83,   
-        "BRYN.DE": 1.88,  
-        "IOC.F": 24.26,   
-        "IVSD.F": 14.70,   
-        "V3PA.DE": 31.05,  
-        "IBC0.DE": 82.12   
+        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, 
+        "I0C.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12
     }
-    
     total_val = 0
-    try:
-        for ticker, shares in euro_portfolio.items():
-            data = yf.Ticker(ticker)
-            price = data.fast_info['last_price']
-            total_val += (price * shares)
-    except Exception as e:
-        st.error(f"Fehler beim Laden der Live-Kurse: {e}")
-        return 0
-        
+    for ticker, shares in euro_portfolio.items():
+        data = yf.Ticker(ticker)
+        hist = data.history(period="1mo")
+        avg_price = hist['Close'].mean() 
+        total_val += (avg_price * shares)
     return total_val
 
 # --- CUSTOM CSS FÜR DEN "APP-LOOK" ---
@@ -53,18 +43,13 @@ st.title("Portfoliodashboard")
 
 # --- DATEN BERECHNUNG ---
 goal_value = 500000
-current_value = get_portfolio_value()
+current_value = get_portfolio_value() 
 progress_pct = min(current_value / goal_value, 1.0)
-    
-# Die große Goal-Card
 st.markdown(f"""
     <div class="goal-card">
         <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Rente 2068</h1>
     </div>
     """, unsafe_allow_html=True)
-    
-# Der abgerundete Fortschrittsbalken
 st.write(f"### {int(progress_pct*100)}% Erreicht")
-st.progress(progress_pct)
-    
+st.progress(progress_pct)    
 st.markdown("---")
