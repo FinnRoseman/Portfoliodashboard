@@ -49,7 +49,6 @@ progress_pct = min(current_value / goal_value, 1.0)
 st.markdown(f"""
     <div class="goal-card">
         <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Rente 2068</h1>
-        <h2 style='color: #2ecc71;'>Aktueller Stand: {current_value:,.2f} €</h2>
     </div>
     """, unsafe_allow_html=True)
     
