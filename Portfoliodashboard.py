@@ -56,14 +56,3 @@ st.markdown(f"""
 st.write(f"### {int(progress_pct*100)}% Geschafft")
 st.progress(progress_pct)  
 st.markdown("---")
-    
-# Milestone Timeline
-st.write("### Milestone Timeline")
-milestones = {
-    "Tier 1 (Emergency Fund)": "DONE ✅",
-    "Tier 2 (Core Capital)": "DONE ✅",
-    "Tier 3 (Growth)": "IN PROGRESS 🔵",
-    "Tier 4 (Financial Freedom)": "FUTURE ⚪"
-}
-for m, status in milestones.items():
-    st.write(f"**{m}**: {status}")
