@@ -49,38 +49,22 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- HEADER ---
-st.title("MY BEHAVIORAL PORTFOLIO TRACKER")
-st.write("Perspektive: Zielerreichung statt Tagesschwankung")
+st.title("Portfoliodashboard")
 
 # --- DATEN BERECHNUNG ---
-goal_value = 100000 # Dein Ziel aus dem Sheet
+goal_value = 500000
 current_value = get_portfolio_value()
-progress_pct = min(current_value / goal_value, 1.0) # Begrenzt auf max 100%
-
-# --- LAYOUT: ZWEI SPALTEN ---
-st.subheader("System 1: Behavioral Goal Tracking")
+progress_pct = min(current_value / goal_value, 1.0)
     
-    # Die große Goal-Card
+# Die große Goal-Card
 st.markdown(f"""
     <div class="goal-card">
-        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>FINANCIAL GOAL: RETIREMENT 2045</h1>
-        <p style='font-size: 1.2rem; color: #666;'>Status: Dein Ziel ist auf Kurs. Bleib diszipliniert!</p>
+        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Altersvorsorge</h1>
     </div>
     """, unsafe_allow_html=True)
     
-    # Der abgerundete Fortschrittsbalken
+# Der abgerundete Fortschrittsbalken
 st.write(f"### {int(progress_pct*100)}% ACHIEVED")
 st.progress(progress_pct)
     
 st.markdown("---")
-    
-    # Milestone Timeline
-st.write("### Milestone Timeline")
-milestones = {
-    "Tier 1 (Emergency Fund)": "DONE ✅",
-    "Tier 2 (Core Capital)": "DONE ✅",
-    "Tier 3 (Growth)": "IN PROGRESS 🔵",
-    "Tier 4 (Financial Freedom)": "FUTURE ⚪"
-}
-for m, status in milestones.items():
-    st.write(f"**{m}**: {status}")
