@@ -3,34 +3,29 @@ import pandas as pd
 import plotly.express as px
 import yfinance as yf
 
-# Page Config für breites Layout
 st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 
 # --- FUNKTION: LIVE-KURSE LADEN (EURO-TICKER) ---
 def get_portfolio_value():
-    # Deine Positionen mit deutschen Tickern (.DE = Xetra, .F = Frankfurt, .SG = Stuttgart)
-    # So umgehen wir die Währungsumrechnung, da diese Kurse direkt in EUR kommen.
     euro_portfolio = {
-        "EMVL.DE": 6.58,   # iShares MSCI EM Value (Xetra)
-        "XD9U.DE": 9.83,   # Xtrackers MSCI USA (Xetra)
-        "BRYN.DE": 1.88,   # Berkshire Hathaway B (Xetra)
-        "ITC.F": 24.26,    # Itochu Corp (Frankfurt)
-        "IVS.F": 14.70,    # Investor AB (Frankfurt)
-        "VDPX.DE": 31.05,  # Vanguard ESG Developed Asia (Xetra)
-        "EUMF.DE": 82.12   # iShares MSCI Europe Multi-Factor (Xetra)
+        "5MVL.DE": 6.58,  
+        "XD9U.DE": 9.83,   
+        "BRYN.DE": 1.88,  
+        "IOC.F": 24.26,   
+        "IVSD.F": 14.70,   
+        "V3PA.DE": 31.05,  
+        "IBC0.DE": 82.12   
     }
     
     total_val = 0
     try:
         for ticker, shares in euro_portfolio.items():
             data = yf.Ticker(ticker)
-            # Nutzt den aktuellsten verfügbaren Preis (Last Price)
             price = data.fast_info['last_price']
             total_val += (price * shares)
     except Exception as e:
-        # Falls Yahoo Finance mal hakt, wird eine Fehlermeldung im Dashboard angezeigt
         st.error(f"Fehler beim Laden der Live-Kurse: {e}")
-        return 72000 # Fallback-Wert
+        return 72000
         
     return total_val
 
