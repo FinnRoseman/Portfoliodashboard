@@ -41,7 +41,7 @@ st.markdown("""
 
     /* Karte oben links (Rente 2068) */
     .metric-card {
-        background-color: #454A4F;
+        background-color: #242122;
         padding: 2rem;
         border-radius: 1.2rem;
         text-align: center;
@@ -50,7 +50,7 @@ st.markdown("""
 
     /* Karte unten links (Monatsrente) */
     .renten-info {
-        background: linear-gradient(135deg, #1f3b4d 0%, #345a72 100%);
+        background: linear-gradient(135deg, #1f3b4d 0%, #242122 100%);
         color: white;
         padding: 1.5rem;
         border-radius: 1.2rem;
