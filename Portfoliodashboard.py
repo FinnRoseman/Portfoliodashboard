@@ -122,35 +122,70 @@ with col2:
         st.error("Fehler beim Laden der Chart-Daten.")
 
 st.write("---")
-st.markdown("### Schwankungen werden mit der Zeit geglättet")
-x = np.linspace(0, 42, 500) 
-trend = 100 * (1.05 ** x) 
-noise_amplitude = 40 * np.exp(-x/12)
-noise = noise_amplitude * np.sin(x * 3) 
-y_smooth = trend + noise
+st.markdown("### 🛡️ Der Zeit-Schutzschild: Warum Geduld das Risiko eliminiert")
+
+# Daten generieren
+x = np.linspace(0, 42, 1000)
+# Wir setzen die Basis leicht ins Positive (z.B. 2), damit die Glättung im Grünen endet
+basis = 2 
+# Starke Amplitude am Anfang (fällt weit unter 0), schnelle Dämpfung
+noise_amplitude = 18 * np.exp(-x/8) 
+noise = noise_amplitude * np.sin(x * 3.5)
+
+y_vals = basis + noise
+
+# Den Graphen erstellen
 fig_shield = go.Figure()
+
+# 1. Rote Fläche (Negativ-Bereich / Risiko)
 fig_shield.add_trace(go.Scatter(
-    x=x, y=y_smooth,
+    x=x, 
+    y=np.minimum(y_vals, 0), # Nur Werte unter 0
+    fill='tozeroy',
     mode='lines',
-    line=dict(width=4, color='#4facfe'),
-    name='Dein Weg',
-    hovertemplate='Jahr: %{x:.1f}<br>Stabilitäts-Faktor: Hoch'
+    line=dict(width=0),
+    fillcolor='rgba(255, 75, 75, 0.4)', # Transparentes Rot
+    name='Risiko-Zone',
+    hoverinfo='skip'
 ))
-fig_shield.add_annotation(x=1, y=y_smooth[10], text="Jahr 1: Starke Schwankungen", 
-                          showarrow=True, arrowhead=2, bgcolor="#ff4b4b", font=dict(color="white"))
-fig_shield.add_annotation(x=15, y=y_smooth[180], text="Jahr 15: Historisch sicher", 
-                          showarrow=True, arrowhead=2, bgcolor="#f9a825", font=dict(color="white"))
-fig_shield.add_annotation(x=40, y=y_smooth[-1], text="Jahr 42: Volle Glättung", 
-                          showarrow=True, arrowhead=2, bgcolor="#31DE12", font=dict(color="white"))
+
+# 2. Grüne Fläche (Positiv-Bereich / Sicherheit)
+fig_shield.add_trace(go.Scatter(
+    x=x, 
+    y=np.maximum(y_vals, 0), # Nur Werte über 0
+    fill='tozeroy',
+    mode='lines',
+    line=dict(width=0),
+    fillcolor='rgba(49, 222, 18, 0.4)', # Transparentes Grün
+    name='Sicherheits-Zone',
+    hoverinfo='skip'
+))
+
+# 3. Die eigentliche Linie (Zweifarbig simulieren durch Schatten)
+fig_shield.add_trace(go.Scatter(
+    x=x, y=y_vals,
+    mode='lines',
+    line=dict(width=3, color='rgba(255,255,255,0.8)'), # Hellgraue Hauptlinie
+    name='Dein Portfolio'
+))
+
+# Nulllinie markieren
+fig_shield.add_hline(y=0, line_width=1, line_color="white", opacity=0.5)
+
+# Callouts für die Logik
+fig_shield.add_annotation(x=2, y=-10, text="Verlust-Gefahr", showarrow=False, font=dict(color="#ff4b4b"))
+fig_shield.add_annotation(x=35, y=5, text="Historische Sicherheit", showarrow=False, font=dict(color="#31DE12"))
+
 fig_shield.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
     paper_bgcolor='rgba(0,0,0,0)',
     height=400,
     margin=dict(l=20, r=20, t=20, b=20),
-    xaxis=dict(title="Jahre bis zur Rente", color="white", showgrid=False),
-    yaxis=dict(title="Portfolio-Stabilität", color="white", showgrid=False, showticklabels=False),
+    xaxis=dict(title="Jahre Haltedauer", color="white", showgrid=False),
+    yaxis=dict(title="Ergebnis-Korridor", color="white", showgrid=False, zeroline=True, showticklabels=False),
     showlegend=False
 )
+
 st.plotly_chart(fig_shield, use_container_width=True)
 
 st.markdown("---")
