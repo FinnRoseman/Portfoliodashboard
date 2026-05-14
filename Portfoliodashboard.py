@@ -38,6 +38,7 @@ st.markdown("""
     /* Card Design */
     .metric-card {
         background-color: #454A4F;
+        border-radius: 1.2rem;
         box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         text-align: center;
         margin-bottom: 1.5rem;
@@ -76,7 +77,7 @@ st.markdown("<h4 style='text-align: center; color: #6c757d; margin-bottom: 0;'>F
 # Central Goal Card
 st.markdown(f"""
     <div class="metric-card">
-        <h1 style='margin: 0; color: #afaeb2; font-size: 3rem;'>Rente 2068</h1>
+        <h1 style='margin: 0; color: white; font-size: 3rem;'>Rente 2068</h1>
         <p style='color: #7df66a; font-weight: 700; font-size: 1.2rem; margin-top: 10px;'>
             {int(progress_pct*100)}% GESCHAFFT
         </p>
