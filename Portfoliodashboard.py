@@ -54,7 +54,12 @@ st.markdown(f"""
     
 # Der abgerundete Fortschrittsbalken
 st.write(f"### {int(progress_pct*100)}% Geschafft")
-st.progress(progress_pct)  
+st.progress(progress_pct)
+st.write("### Dein gesicherter Lebensstandard")
+gesicherte_rente = (current_value * 0.04) / 12
+ziel_rente = (goal_value * 0.04) / 12
+st.success(f"Dein aktuelles Depot hat dir bereits eine monatliche Rente von **{gesicherte_rente:.2f} €** (ab 2068) 'gekauft'.")
+st.write(f"Das entspricht bereits **{int((gesicherte_rente/ziel_rente)*100)}%** deines angestrebten Renten-Budgets von {ziel_rente:.0f} €.")
 st.markdown("---")
 
 euro_portfolio = {
