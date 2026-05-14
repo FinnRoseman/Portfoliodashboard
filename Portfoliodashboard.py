@@ -85,7 +85,7 @@ with col1:
     st.markdown(f"""
         <div class="metric-card">
             <h1 style='margin: 0; font-size: 2.8rem;'>Rente 2068</h1>
-            <p style='color: #31DE12 !important; font-weight: 700; font-size: 1.1rem; margin-top: 10px;'>
+            <p style='color: #31de12 !important; font-weight: 700; font-size: 1.1rem; margin-top: 10px;'>
                 {int(progress_pct*100)}% GESCHAFFT
             </p>
         </div>
@@ -98,7 +98,7 @@ with col1:
     # Renten-Budget Karte
     st.markdown(f"""
         <div class="renten-info">
-            <span style='font-size: 0.8rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;'>Monatliches Rente (aktuell)</span>
+            <span style='font-size: 0.8rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;'>Rente nach aktuellem Stand</span>
             <h2 style='margin: 10px 0; font-size: 2.2rem;'>{gesicherte_rente:.2f} € <span style='font-size: 1rem; opacity:0.6;'>/ Monat</span></h2>
             <p style='font-size: 0.8rem; margin: 0; opacity: 0.8;'>Basierend auf 4% Entnahmerate</p>
         </div>
