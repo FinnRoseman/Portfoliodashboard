@@ -102,7 +102,7 @@ with col2:
             values='Wert', 
             names='Asset', 
             hole=0.6,
-            color_discrete_sequence=px.colors.sequential.dense_r
+            color_discrete_sequence=px.colors.sequential.purp_r
         )     
         fig.update_layout(
             margin=dict(t=30, b=0, l=0, r=0),
