@@ -1,31 +1,34 @@
 import streamlit as st
 import pandas as pd
-import yfinance as yf
 import plotly.express as px
+import yfinance as yf
 
-st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="centered")
+# --- KONFIGURATION & DATA ---
+st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 
-# --- DATA LOGIC ---
-@st.cache_data(ttl=3600) # Cache für 1 Stunde, um Ladezeit zu sparen
+@st.cache_data(ttl=3600)
 def get_portfolio_data():
     portfolio_config = {
         "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, 
         "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
     }
     total_val = 0
-    names = []
+    chart_list = []
     
     for ticker, shares in portfolio_config.items():
-        data = yf.Ticker(ticker)
-        # Schnellerer Preisabruf
-        price = data.fast_info['last_price']
-        total_val += (price * shares)
-        # Namen für die Liste unten sammeln
-        names.append(f"{data.info.get('longName', ticker)} ({ticker})")
-        
-    return total_val, names
+        try:
+            asset = yf.Ticker(ticker)
+            price = asset.fast_info['last_price']
+            full_name = asset.info.get('longName', ticker)
+            wert = price * shares
+            total_val += wert
+            chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
+        except:
+            continue
+            
+    return total_val, pd.DataFrame(chart_list)
 
-# --- STYLING (MODERN APP LOOK) ---
+# --- CUSTOM CSS FÜR MODERNES DESIGN ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -34,104 +37,105 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
     
-    .main { background-color: #f0f2f6; }
-    
-    /* Card Design */
+    .main { background-color: #0E1117; } /* Dunkler Hintergrund für App-Look */
+
+    /* Karte oben links (Rente 2068) */
     .metric-card {
         background-color: #454A4F;
-        padding: 2.0rem;
+        padding: 2rem;
         border-radius: 1.2rem;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         text-align: center;
-        margin-bottom: 1.5rem
+        margin-bottom: 1rem;
     }
-    
+
+    /* Karte unten links (Monatsrente) */
     .renten-info {
         background: linear-gradient(135deg, #1f3b4d 0%, #345a72 100%);
         color: white;
         padding: 1.5rem;
-        border-radius: 1rem;
+        border-radius: 1.2rem;
         text-align: center;
-        margin-top: 1rem;
     }
-    
-    /* Progress Bar Styling */
+
+    /* Fortschrittsbalken Styling */
     .stProgress > div > div > div > div {
-        background-color: #4facfe;
         background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
         border-radius: 10px;
         height: 12px;
     }
     
-    h1, h2, h3 { color: #1f3b4d; }
+    h1, h2, h3, p { color: white !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- APP START ---
+# --- DATEN LADEN ---
 goal_value = 500000 
-current_value, asset_names = get_portfolio_data()
+current_value, df_chart = get_portfolio_data()
 progress_pct = min(current_value / goal_value, 1.0) 
-
-# Header
-st.markdown("<h4 style='text-align: center; color: #6c757d; margin-bottom: 0;'>Finanzielle Freiheit im Alter</h4>", unsafe_allow_html=True)
-
-# Central Goal Card
-st.markdown(f"""
-    <div class="metric-card">
-        <h1 style='margin: 0; color: white; font-size: 3rem;'>Rente 2068</h1>
-        <p style='color: #7df66a; font-weight: 700; font-size: 1.2rem; margin-top: 10px;'>
-            {int(progress_pct*100)}% GESCHAFFT
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Progress Bar
-st.progress(progress_pct)
-
-# Behavioral Reframing Card
 gesicherte_rente = (current_value * 0.04) / 12
 
-st.markdown(f"""
-    <div class="renten-info">
-        <span style='font-size: 0.9rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;'>Monatliches Budget in der Rente nach aktuellem Stand</span>
-        <h2 style='color: white; margin: 10px 0; font-size: 2.2rem;'>{gesicherte_rente:.2f} €</h2>
-    </div>
-    """, unsafe_allow_html=True)
+# --- LAYOUT: ZWEI SPALTEN ---
+col1, col2 = st.columns([1, 1.2], gap="large")
 
+# --- LINKE SPALTE: ZAHLEN & FORTSCHRITT ---
+with col1:
+    st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Fortschritt Übersicht</p>", unsafe_allow_html=True)
+    
+    # Ziel Karte
+    st.markdown(f"""
+        <div class="metric-card">
+            <h1 style='margin: 0; font-size: 2.8rem;'>Rente 2068</h1>
+            <p style='color: #4facfe !important; font-weight: 700; font-size: 1.1rem; margin-top: 10px;'>
+                {int(progress_pct*100)}% GESCHAFFT
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Balken direkt darunter
+    st.progress(progress_pct)
+    st.write("") # Kleiner Abstand
+    
+    # Renten-Budget Karte
+    st.markdown(f"""
+        <div class="renten-info">
+            <span style='font-size: 0.8rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;'>Gesicherter Lebensstandard (heute)</span>
+            <h2 style='margin: 10px 0; font-size: 2.2rem;'>{gesicherte_rente:.2f} € <span style='font-size: 1rem; opacity:0.6;'>/ Monat</span></h2>
+            <p style='font-size: 0.8rem; margin: 0; opacity: 0.8;'>Basierend auf 4% Entnahmerate</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# --- RECHTE SPALTE: VISUALISIERUNG (DONUT) ---
+with col2:
+    st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)
+    
+    if not df_chart.empty:
+        fig = px.pie(
+            df_chart, 
+            values='Wert', 
+            names='Asset', 
+            hole=0.6,
+            color_discrete_sequence=px.colors.sequential.Blues_r
+        )
+        
+        fig.update_layout(
+            margin=dict(t=30, b=0, l=0, r=0),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color="white", size=12),
+            showlegend=True,
+            legend=dict(
+                orientation="v",
+                yanchor="middle", y=0.5,
+                xanchor="left", x=1.1 # Legende rechts neben den Chart
+            )
+        )
+        # Mouseover Info verschönern
+        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")
+        
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.error("Fehler beim Laden der Chart-Daten.")
+
+# Footer Info
 st.markdown("---")
-
-with st.expander("Portfolio Details anzeigen"):
-    st.markdown("### Deine Strategie-Bausteine")
-    
-    portfolio_config = {
-        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, 
-        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
-    }
-    chart_data = []
-    for ticker, shares in portfolio_config.items():
-        price = yf.Ticker(ticker).fast_info['last_price']
-        full_name = yf.Ticker(ticker).info.get('longName', ticker)
-        chart_data.append({"Asset": full_name, "Wert": round(price * shares, 2)})
-    
-    df_chart = pd.DataFrame(chart_data)
-
-    # 2. Donut Chart erstellen
-    fig = px.pie(
-        df_chart, 
-        values='Wert', 
-        names='Asset', 
-        hole=0.5, # Macht den Pie zum Donut
-        color_discrete_sequence=px.colors.sequential.Blues_r # Schöne Blautöne
-    )
-
-    # Layout optimieren (Legende rechts, Hintergrund transparent)
-    fig.update_layout(
-        showlegend=True,
-        legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.1),
-        margin=dict(t=0, b=0, l=0, r=0),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
-    )
-
-    # 3. Chart in Streamlit anzeigen
-    st.plotly_chart(fig, use_container_width=True)
+st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Dieses Dashboard dient dem Behavioral Framing. Kursschwankungen sind Rauschen. Das Ziel ist die Substanz.</p>", unsafe_allow_html=True)
