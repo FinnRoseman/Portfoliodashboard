@@ -50,7 +50,7 @@ st.markdown("""
 
     /* Karte unten links (Monatsrente) */
     .renten-info {
-        background: linear-gradient(135deg, #0B0840 50%, #270840 50%);
+        background: linear-gradient(135deg, #0B0840 20%, #270840 80%);
         color: white;
         padding: 1.5rem;
         border-radius: 1.2rem;
