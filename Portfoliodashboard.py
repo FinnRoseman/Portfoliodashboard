@@ -37,7 +37,7 @@ st.markdown("""
     
     /* Card Design */
     .metric-card {
-        background-color: #EA75AE;
+        background-color: #EABF76;
         padding: 2rem;
         border-radius: 1.2rem;
         box-shadow: 0 10px 25px rgba(0,0,0,0.05);
