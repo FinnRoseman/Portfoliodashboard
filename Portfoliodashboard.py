@@ -99,10 +99,36 @@ st.markdown(f"""
 
 st.markdown("---")
 
-# Asset List (System 2 - Details)
 with st.expander("Portfolio Details anzeigen"):
     st.markdown("### Deine Strategie-Bausteine")
-    for name in asset_names:
-        st.markdown(f"<div style='padding: 5px 0; border-bottom: 1px solid #f0f2f6; font-size: 0.9rem;'>{name}</div>", unsafe_allow_html=True)
+    
+    # 1. Daten für den Chart vorbereiten
+    # Wir brauchen die Namen und die berechneten Werte pro Position
+    chart_data = []
+    for ticker, shares in euro_portfolio.items():
+        price = yf.Ticker(ticker).fast_info['last_price']
+        full_name = yf.Ticker(ticker).info.get('longName', ticker)
+        chart_data.append({"Asset": full_name, "Wert": round(price * shares, 2)})
+    
+    df_chart = pd.DataFrame(chart_data)
 
-st.markdown("<p style='text-align: center; color: #ced4da; font-size: 0.7rem; margin-top: 50px;'>Stay focused</p>", unsafe_allow_html=True)
+    # 2. Donut Chart erstellen
+    fig = px.pie(
+        df_chart, 
+        values='Wert', 
+        names='Asset', 
+        hole=0.5, # Macht den Pie zum Donut
+        color_discrete_sequence=px.colors.sequential.Blues_r # Schöne Blautöne
+    )
+
+    # Layout optimieren (Legende rechts, Hintergrund transparent)
+    fig.update_layout(
+        showlegend=True,
+        legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.1),
+        margin=dict(t=0, b=0, l=0, r=0),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+
+    # 3. Chart in Streamlit anzeigen
+    st.plotly_chart(fig, use_container_width=True)
