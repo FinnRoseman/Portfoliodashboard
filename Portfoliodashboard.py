@@ -162,11 +162,22 @@ fig_shield.add_trace(go.Scatter(
 ))
 
 # 3. Die eigentliche Linie (Zweifarbig simulieren durch Schatten)
+# 1. Die GRÜNE Linie (Werte >= 0)
 fig_shield.add_trace(go.Scatter(
-    x=x, y=y_vals,
+    x=x, 
+    y=np.where(y_vals >= 0, y_vals, np.nan), # Zeige Linie nur wenn positiv, sonst Lücke
     mode='lines',
-    line=dict(width=3, color='rgba(255,255,255,0.8)'), # Hellgraue Hauptlinie
-    name='Dein Portfolio'
+    line=dict(width=4, color='#31DE12'),
+    name='Sicherheit'
+))
+
+# 2. Die ROTE Linie (Werte < 0)
+fig_shield.add_trace(go.Scatter(
+    x=x, 
+    y=np.where(y_vals < 0, y_vals, np.nan), # Zeige Linie nur wenn negativ, sonst Lücke
+    mode='lines',
+    line=dict(width=4, color='#ff4b4b'),
+    name='Risiko'
 ))
 
 # Nulllinie markieren
