@@ -169,7 +169,5 @@ fig_shield.update_layout(
 
 st.plotly_chart(fig_shield, use_container_width=True)
 
-st.info("**Behavioral Tipp:** Siehst du, wie die Linie am Anfang zittert? Das ist das, was du heute in den Nachrichten siehst. Rechts, wo die Linie glatt wird, ist dein Ziel. Je weiter du nach rechts wanderst, desto unwichtiger wird das Zittern von links.")
-
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Stay focused ・ Stay invested ・ Keep investing ・ Never change a running system</p>", unsafe_allow_html=True)
