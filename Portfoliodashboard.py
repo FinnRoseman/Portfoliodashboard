@@ -1,74 +1,108 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import yfinance as yf
 
-st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
+st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="centered")
 
-def get_portfolio_value():
-    euro_portfolio = {
-        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
+# --- DATA LOGIC ---
+@st.cache_data(ttl=3600) # Cache für 1 Stunde, um Ladezeit zu sparen
+def get_portfolio_data():
+    portfolio_config = {
+        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, 
+        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
     }
     total_val = 0
-    try:
-        for ticker, shares in euro_portfolio.items():
-            data = yf.Ticker(ticker)
-            price = data.fast_info['last_price']
-            total_val += (price * shares)
-    except Exception as e:
-        st.error(f"Fehler beim Laden der Live-Kurse: {e}")
-        return 0      
-    return total_val
+    names = []
+    
+    for ticker, shares in portfolio_config.items():
+        data = yf.Ticker(ticker)
+        # Schnellerer Preisabruf
+        price = data.fast_info['last_price']
+        total_val += (price * shares)
+        # Namen für die Liste unten sammeln
+        names.append(f"{data.info.get('longName', ticker)} ({ticker})")
+        
+    return total_val, names
 
-# --- CUSTOM CSS FÜR DEN "APP-LOOK" ---
+# --- STYLING (MODERN APP LOOK) ---
 st.markdown("""
     <style>
-    .main { background-color: #f8f9fa; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .main { background-color: #f0f2f6; }
+    
+    /* Card Design */
+    .metric-card {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 1.2rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        text-align: center;
+        margin-bottom: 1.5rem;
+        border: 1px solid #eee;
+    }
+    
+    .renten-info {
+        background: linear-gradient(135deg, #1f3b4d 0%, #345a72 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-top: 1rem;
+    }
+    
+    /* Progress Bar Styling */
     .stProgress > div > div > div > div {
+        background-color: #4facfe;
         background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
         border-radius: 10px;
+        height: 12px;
     }
-    .goal-card {
-        background-color: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        text-align: center;
-        margin-bottom: 20px;
-    }
+    
+    h1, h2, h3 { color: #1f3b4d; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- HEADER ---
-st.title("Behavioral Finance Dashboard")
-
-# --- DATEN BERECHNUNG ---
+# --- APP START ---
 goal_value = 500000 
-current_value = get_portfolio_value()
+current_value, asset_names = get_portfolio_data()
 progress_pct = min(current_value / goal_value, 1.0) 
+
+# Header
+st.markdown("<h4 style='text-align: center; color: #6c757d; margin-bottom: 0;'>MEIN ZIEL 2068</h4>", unsafe_allow_html=True)
+
+# Central Goal Card
 st.markdown(f"""
-    <div class="goal-card">
-        <h1 style='color: #1f3b4d; font-size: 2.5rem;'>Rente 2068</h1>
+    <div class="metric-card">
+        <h1 style='margin: 0; font-size: 3rem;'>Rente 2068</h1>
+        <p style='color: #4facfe; font-weight: 700; font-size: 1.2rem; margin-top: 10px;'>
+            {int(progress_pct*100)}% GESCHAFFT
+        </p>
     </div>
     """, unsafe_allow_html=True)
-    
-# Der abgerundete Fortschrittsbalken
-st.write(f"### {int(progress_pct*100)}% Geschafft")
-st.progress(progress_pct)
-st.write("### Dein gesicherter Lebensstandard")
-gesicherte_rente = (current_value * 0.04) / 12
-ziel_rente = (goal_value * 0.04) / 12
-st.success(f"Dein aktuelles Depot sichert dir aktuell eine monatliche Rente von {gesicherte_rente:.2f} €.")
-st.write(f"Das entspricht **{int((gesicherte_rente/ziel_rente)*100)}%** deines monatlich angestrebten Budgets von {ziel_rente:.0f} €.")
-st.markdown("---")
 
-euro_portfolio = {
-        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
-    }
-for ticker in euro_portfolio.keys():
-    try:
-        asset = yf.Ticker(ticker)
-        full_name = asset.info.get('longName', ticker) 
-        st.write(f"* **{full_name}** ({ticker})")
-    except:
-        st.write(f"* **Unbekanntes Asset** ({ticker})")
+# Progress Bar
+st.progress(progress_pct)
+
+# Behavioral Reframing Card
+gesicherte_rente = (current_value * 0.04) / 12
+
+st.markdown(f"""
+    <div class="renten-info">
+        <span style='font-size: 0.9rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;'>Gesicherter monatlicher Lebensstandard</span>
+        <h2 style='color: white; margin: 10px 0; font-size: 2.2rem;'>{gesicherte_rente:.2f} €</h2>
+        <p style='font-size: 0.85rem; margin: 0; opacity: 0.9;'>Basierend auf der aktuellen Depot-Substanz</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Asset List (System 2 - Details)
+with st.expander("Portfolio Details anzeigen"):
+    st.markdown("### Deine Strategie-Bausteine")
+    for name in asset_names:
+        st.markdown(f"<div style='padding: 5px 0; border-bottom: 1px solid #f0f2f6; font-size: 0.9rem;'>{name}</div>", unsafe_allow_html=True)
+
+st.markdown("<p style='text-align: center; color: #ced4da; font-size: 0.7rem; margin-top: 50px;'>Fokus auf das Ziel. Ignoriere das Rauschen.</p>", unsafe_allow_html=True)
