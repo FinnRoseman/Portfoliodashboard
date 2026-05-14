@@ -57,6 +57,9 @@ st.write(f"### {int(progress_pct*100)}% Geschafft")
 st.progress(progress_pct)  
 st.markdown("---")
 
+euro_portfolio = {
+        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
+    }
 for ticker in euro_portfolio.keys():
     try:
         asset = yf.Ticker(ticker)
