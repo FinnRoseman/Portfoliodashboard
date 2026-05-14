@@ -138,4 +138,4 @@ with col2:
 
 # Footer Info
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Dieses Dashboard dient dem Behavioral Framing. Kursschwankungen sind Rauschen. Das Ziel ist die Substanz.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Stay focused</p>", unsafe_allow_html=True)
