@@ -41,8 +41,7 @@ st.markdown("""
         border-radius: 1.2rem;
         box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         text-align: center;
-        margin-bottom: 1.5rem;
-        border: 1px solid #eee;
+        margin-bottom: 1.5rem
     }
     
     .renten-info {
