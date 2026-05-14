@@ -56,3 +56,11 @@ st.markdown(f"""
 st.write(f"### {int(progress_pct*100)}% Geschafft")
 st.progress(progress_pct)  
 st.markdown("---")
+
+for ticker in euro_portfolio.keys():
+    try:
+        asset = yf.Ticker(ticker)
+        full_name = asset.info.get('longName', ticker) 
+        st.write(f"* **{full_name}** ({ticker})")
+    except:
+        st.write(f"* **Unbekanntes Asset** ({ticker})")
