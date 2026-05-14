@@ -122,81 +122,56 @@ with col2:
         st.error("Fehler beim Laden der Chart-Daten.")
 
 st.write("---")
-st.markdown("### 🛡️ Der Zeit-Schutzschild: Warum Geduld das Risiko eliminiert")
-
-# Daten generieren
 x = np.linspace(0, 42, 1000)
-# Wir setzen die Basis leicht ins Positive (z.B. 2), damit die Glättung im Grünen endet
 basis = 2 
-# Starke Amplitude am Anfang (fällt weit unter 0), schnelle Dämpfung
 noise_amplitude = 18 * np.exp(-x/8) 
 noise = noise_amplitude * np.sin(x * 3.5)
-
 y_vals = basis + noise
-
-# Den Graphen erstellen
 fig_shield = go.Figure()
-
-# 1. Rote Fläche (Negativ-Bereich / Risiko)
 fig_shield.add_trace(go.Scatter(
     x=x, 
-    y=np.minimum(y_vals, 0), # Nur Werte unter 0
+    y=np.minimum(y_vals, 0), 
     fill='tozeroy',
     mode='lines',
     line=dict(width=0),
-    fillcolor='rgba(255, 75, 75, 0.4)', # Transparentes Rot
+    fillcolor='rgba(255, 75, 75, 0.4)',
     name='Risiko-Zone',
     hoverinfo='skip'
 ))
-
-# 2. Grüne Fläche (Positiv-Bereich / Sicherheit)
 fig_shield.add_trace(go.Scatter(
     x=x, 
-    y=np.maximum(y_vals, 0), # Nur Werte über 0
+    y=np.maximum(y_vals, 0), 
     fill='tozeroy',
     mode='lines',
     line=dict(width=0),
-    fillcolor='rgba(49, 222, 18, 0.4)', # Transparentes Grün
+    fillcolor='rgba(49, 222, 18, 0.4)',
     name='Sicherheits-Zone',
     hoverinfo='skip'
 ))
-
-# 3. Die eigentliche Linie (Zweifarbig simulieren durch Schatten)
-# 1. Die GRÜNE Linie (Werte >= 0)
 fig_shield.add_trace(go.Scatter(
     x=x, 
-    y=np.where(y_vals >= 0, y_vals, np.nan), # Zeige Linie nur wenn positiv, sonst Lücke
+    y=np.where(y_vals >= 0, y_vals, np.nan),
     mode='lines',
     line=dict(width=4, color='#31DE12'),
     name='Sicherheit'
 ))
-
-# 2. Die ROTE Linie (Werte < 0)
 fig_shield.add_trace(go.Scatter(
     x=x, 
-    y=np.where(y_vals < 0, y_vals, np.nan), # Zeige Linie nur wenn negativ, sonst Lücke
+    y=np.where(y_vals < 0, y_vals, np.nan), 
     mode='lines',
     line=dict(width=4, color='#ff4b4b'),
     name='Risiko'
 ))
-
-# Nulllinie markieren
 fig_shield.add_hline(y=0, line_width=1, line_color="white", opacity=0.5)
-
-# Callouts für die Logik
-fig_shield.add_annotation(x=2, y=-10, text="Verlust-Gefahr", showarrow=False, font=dict(color="#ff4b4b"))
-fig_shield.add_annotation(x=35, y=5, text="Historische Sicherheit", showarrow=False, font=dict(color="#31DE12"))
-
 fig_shield.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
     paper_bgcolor='rgba(0,0,0,0)',
     height=400,
     margin=dict(l=20, r=20, t=20, b=20),
-    xaxis=dict(title="Jahre Haltedauer", color="white", showgrid=False),
-    yaxis=dict(title="Ergebnis-Korridor", color="white", showgrid=False, zeroline=True, showticklabels=False),
+    xaxis=dict(title="Haltedauer in Jahren", color="white", showgrid=False),
+    yaxis=dict(title="Volatilität", color="white", showgrid=False, zeroline=True, showticklabels=False),
     showlegend=False
 )
-
 st.plotly_chart(fig_shield, use_container_width=True)
 
 st.markdown("---")
