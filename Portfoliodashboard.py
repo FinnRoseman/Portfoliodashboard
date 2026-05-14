@@ -129,8 +129,8 @@ x = np.linspace(0, 42, 500)  # 42 Jahre bis 2068
 # 1. Der stetige Trend (leicht exponentiell)
 trend = 100 * (1.05 ** x) 
 # 2. Das "Zick-Zack" (Dämpfung: am Anfang stark, am Ende fast 0)
-noise_amplitude = 25 * np.exp(-x/12) # Nach 12 Jahren halbiert sich das sichtbare Rauschen
-noise = noise_amplitude * np.sin(x * 2) # Sinus für geschmeidige Wellen
+noise_amplitude = 40 * np.exp(-x/12) # Nach 12 Jahren halbiert sich das sichtbare Rauschen
+noise = noise_amplitude * np.sin(x * 3) # Sinus für geschmeidige Wellen
 
 y_smooth = trend + noise
 
