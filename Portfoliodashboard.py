@@ -41,7 +41,7 @@ st.markdown("""
 
     /* Karte oben links (Rente 2068) */
     .metric-card {
-        background: linear-gradient(135deg, #0B0840 20%, #270840 80%);
+        background: linear-gradient(135deg, #0B0840 80%, #270840 20%);
         padding: 2rem;
         border-radius: 1.2rem;
         text-align: center;
