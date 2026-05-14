@@ -73,7 +73,7 @@ current_value, asset_names = get_portfolio_data()
 progress_pct = min(current_value / goal_value, 1.0) 
 
 # Header
-st.markdown("<h4 style='text-align: center; color: #6c757d; margin-bottom: 0;'>MEIN ZIEL 2068</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align: center; color: #6c757d; margin-bottom: 0;'>Ziel: Gutes Leben im Alter</h4>", unsafe_allow_html=True)
 
 # Central Goal Card
 st.markdown(f"""
