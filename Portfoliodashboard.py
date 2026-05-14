@@ -114,4 +114,4 @@ with col2:
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Stay focused</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Stay focused ・ Stay invested ・ Keep investing ・ Never change a running system</p>", unsafe_allow_html=True)
