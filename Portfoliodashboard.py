@@ -58,8 +58,8 @@ st.progress(progress_pct)
 st.write("### Dein gesicherter Lebensstandard")
 gesicherte_rente = (current_value * 0.04) / 12
 ziel_rente = (goal_value * 0.04) / 12
-st.success(f"Dein aktuelles Depot sichert dir aktuell eine monatliche Rente von **{gesicherte_rente:.2f} €.")
-st.write(f"Das entspricht **{int((gesicherte_rente/ziel_rente)*100)}%** deines monatlich angestrebten Budgets {ziel_rente:.0f} €.")
+st.success(f"Dein aktuelles Depot sichert dir aktuell eine monatliche Rente von {gesicherte_rente:.2f} €.")
+st.write(f"Das entspricht **{int((gesicherte_rente/ziel_rente)*100)}%** deines monatlich angestrebten Budgets von {ziel_rente:.0f} €.")
 st.markdown("---")
 
 euro_portfolio = {
