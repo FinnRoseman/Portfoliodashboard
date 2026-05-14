@@ -122,6 +122,7 @@ with col2:
         st.error("Fehler beim Laden der Chart-Daten.")
 
 st.write("---")
+st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Zeitfaktor</p>", unsafe_allow_html=True)
 x = np.linspace(0, 42, 1000)
 basis = 2 
 noise_amplitude = 18 * np.exp(-x/8) 
