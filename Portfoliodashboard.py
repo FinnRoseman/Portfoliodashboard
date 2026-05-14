@@ -79,7 +79,7 @@ st.markdown("<h4 style='text-align: center; color: #6c757d; margin-bottom: 0;'>M
 st.markdown(f"""
     <div class="metric-card">
         <h1 style='margin: 0; color: #afaeb2; font-size: 3rem;'>Rente 2068</h1>
-        <p style='color: #4facfe; font-weight: 700; font-size: 1.2rem; margin-top: 10px;'>
+        <p style='color: #7df66a; font-weight: 700; font-size: 1.2rem; margin-top: 10px;'>
             {int(progress_pct*100)}% GESCHAFFT
         </p>
     </div>
