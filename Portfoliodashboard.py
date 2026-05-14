@@ -5,7 +5,6 @@ import yfinance as yf
 
 # --- KONFIGURATION & DATA ---
 st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
-
 @st.cache_data(ttl=3600)
 def get_portfolio_data():
     portfolio_config = {
@@ -13,8 +12,7 @@ def get_portfolio_data():
         "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
     }
     total_val = 0
-    chart_list = []
-    
+    chart_list = []    
     for ticker, shares in portfolio_config.items():
         try:
             asset = yf.Ticker(ticker)
@@ -24,8 +22,7 @@ def get_portfolio_data():
             total_val += wert
             chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
         except:
-            continue
-            
+            continue      
     return total_val, pd.DataFrame(chart_list)
 
 # --- CUSTOM CSS FÜR MODERNES DESIGN ---
@@ -35,10 +32,8 @@ st.markdown("""
     
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
-    }
-    
+    } 
     .main { background-color: #0E1117; } /* Dunkler Hintergrund für App-Look */
-
     /* Karte oben links (Rente 2068) */
     .metric-card {
         background: linear-gradient(135deg, #0B0840 20%, #270840 80%);
@@ -47,7 +42,6 @@ st.markdown("""
         text-align: center;
         margin-bottom: 1rem;
     }
-
     /* Karte unten links (Monatsrente) */
     .renten-info {
         background: linear-gradient(135deg, #0B0840 20%, #270840 80%);
@@ -56,14 +50,12 @@ st.markdown("""
         border-radius: 1.2rem;
         text-align: center;
     }
-
     /* Fortschrittsbalken Styling */
     .stProgress > div > div > div > div {
         background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
         border-radius: 10px;
         height: 12px;
-    }
-    
+    }  
     h1, h2, h3, p { color: white !important; }
     </style>
     """, unsafe_allow_html=True)
@@ -76,12 +68,8 @@ gesicherte_rente = (current_value * 0.04) / 12
 
 # --- LAYOUT: ZWEI SPALTEN ---
 col1, col2 = st.columns([1, 1.2], gap="large")
-
-# --- LINKE SPALTE: ZAHLEN & FORTSCHRITT ---
 with col1:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Fortschritt Übersicht</p>", unsafe_allow_html=True)
-    
-    # Ziel Karte
     st.markdown(f"""
         <div class="metric-card">
             <h1 style='margin: 0; font-size: 2.8rem;'>Rente 2068</h1>
@@ -90,12 +78,8 @@ with col1:
             </p>
         </div>
         """, unsafe_allow_html=True)
-    
-    # Balken direkt darunter
     st.progress(progress_pct)
-    st.write("") # Kleiner Abstand
-    
-    # Renten-Budget Karte
+    st.write("") 
     st.markdown(f"""
         <div class="renten-info">
             <span style='font-size: 0.8rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;'>Rente nach aktuellem Stand</span>
@@ -103,11 +87,8 @@ with col1:
             <p style='font-size: 0.8rem; margin: 0; opacity: 0.8;'>Basierend auf 4% Entnahmerate</p>
         </div>
         """, unsafe_allow_html=True)
-
-# --- RECHTE SPALTE: VISUALISIERUNG (DONUT) ---
 with col2:
-    st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)
-    
+    st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
         fig = px.pie(
             df_chart, 
@@ -115,8 +96,7 @@ with col2:
             names='Asset', 
             hole=0.6,
             color_discrete_sequence=px.colors.sequential.Blues_r
-        )
-        
+        )     
         fig.update_layout(
             margin=dict(t=30, b=0, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
@@ -126,16 +106,12 @@ with col2:
             legend=dict(
                 orientation="v",
                 yanchor="middle", y=0.5,
-                xanchor="left", x=1.1 # Legende rechts neben den Chart
+                xanchor="left", x=1.1 
             )
         )
-        # Mouseover Info verschönern
-        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")
-        
+        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
-
-# Footer Info
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Stay focused</p>", unsafe_allow_html=True)
