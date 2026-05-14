@@ -83,13 +83,13 @@ with col1:
     
     # Ziel Karte
     st.markdown(f"""
-        <div class="metric-card">
-            <h1 style='margin: 0; font-size: 2.8rem;'>Rente 2068</h1>
-            <p style='color: #31DE12 !important; font-weight: 700; font-size: 1.1rem; margin-top: 10px;'>
-                {int(progress_pct*100)}% GESCHAFFT
-            </p>
+    <div class="metric-card">
+        <h1 style='margin: 0; font-size: 2.8rem; color: white !important;'>Rente 2068</h1>
+        <div style='color: #31DE12 !important; font-weight: 800 !important; font-size: 1.3rem !important; margin-top: 15px; text-transform: uppercase;'>
+            {int(progress_pct*100)}% GESCHAFFT
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
     
     # Balken direkt darunter
     st.progress(progress_pct)
