@@ -38,7 +38,6 @@ st.markdown("""
     /* Card Design */
     .metric-card {
         background-color: #454A4F;
-        padding: 2rem;
         border-radius: 1.2rem;
         box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         text-align: center;
