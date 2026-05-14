@@ -102,10 +102,12 @@ st.markdown("---")
 with st.expander("Portfolio Details anzeigen"):
     st.markdown("### Deine Strategie-Bausteine")
     
-    # 1. Daten für den Chart vorbereiten
-    # Wir brauchen die Namen und die berechneten Werte pro Position
+    portfolio_config = {
+        "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, 
+        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
+    }
     chart_data = []
-    for ticker, shares in euro_portfolio.items():
+    for ticker, shares in portfolio_config.items():
         price = yf.Ticker(ticker).fast_info['last_price']
         full_name = yf.Ticker(ticker).info.get('longName', ticker)
         chart_data.append({"Asset": full_name, "Wert": round(price * shares, 2)})
