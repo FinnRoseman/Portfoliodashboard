@@ -122,22 +122,13 @@ with col2:
         st.error("Fehler beim Laden der Chart-Daten.")
 
 st.write("---")
-st.markdown("### 🛡️ Der Zeit-Schutzschild: Warum Geduld das Risiko eliminiert")
-
-# Daten für die geschmeidige Kurve generieren
-x = np.linspace(0, 42, 500)  # 42 Jahre bis 2068
-# 1. Der stetige Trend (leicht exponentiell)
+st.markdown("### Schwankungen werden mit der Zeit geglättet")
+x = np.linspace(0, 42, 500) 
 trend = 100 * (1.05 ** x) 
-# 2. Das "Zick-Zack" (Dämpfung: am Anfang stark, am Ende fast 0)
-noise_amplitude = 40 * np.exp(-x/12) # Nach 12 Jahren halbiert sich das sichtbare Rauschen
-noise = noise_amplitude * np.sin(x * 3) # Sinus für geschmeidige Wellen
-
+noise_amplitude = 40 * np.exp(-x/12)
+noise = noise_amplitude * np.sin(x * 3) 
 y_smooth = trend + noise
-
-# Plotly Graph erstellen
 fig_shield = go.Figure()
-
-# Die geschmeidige Linie
 fig_shield.add_trace(go.Scatter(
     x=x, y=y_smooth,
     mode='lines',
@@ -145,18 +136,12 @@ fig_shield.add_trace(go.Scatter(
     name='Dein Weg',
     hovertemplate='Jahr: %{x:.1f}<br>Stabilitäts-Faktor: Hoch'
 ))
-
-# Statistische Ankerpunkte (Callouts) hinzufügen
-# 1 Jahr
-fig_shield.add_annotation(x=1, y=y_smooth[10], text="⚠️ 1 Jahr: Hohes Rauschen", 
+fig_shield.add_annotation(x=1, y=y_smooth[10], text="1 Jahr: Starke Schwankungen", 
                           showarrow=True, arrowhead=2, bgcolor="#ff4b4b", font=dict(color="white"))
-# 15 Jahre
-fig_shield.add_annotation(x=15, y=y_smooth[180], text="🛡️ 15 Jahre: Historisch sicher", 
+fig_shield.add_annotation(x=15, y=y_smooth[180], text="15 Jahre: Historisch sicher", 
                           showarrow=True, arrowhead=2, bgcolor="#f9a825", font=dict(color="white"))
-# Ziel
-fig_shield.add_annotation(x=40, y=y_smooth[-1], text="🎯 2068: Volle Glättung", 
+fig_shield.add_annotation(x=40, y=y_smooth[-1], text="2068: Volle Glättung", 
                           showarrow=True, arrowhead=2, bgcolor="#31DE12", font=dict(color="white"))
-
 fig_shield.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
     paper_bgcolor='rgba(0,0,0,0)',
@@ -166,7 +151,6 @@ fig_shield.update_layout(
     yaxis=dict(title="Portfolio-Stabilität", color="white", showgrid=False, showticklabels=False),
     showlegend=False
 )
-
 st.plotly_chart(fig_shield, use_container_width=True)
 
 st.markdown("---")
