@@ -9,7 +9,7 @@ st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="centered")
 def get_portfolio_data():
     portfolio_config = {
         "5MVL.DE": 6.58, "XD9U.DE": 9.83, "BRYN.DE": 1.88, 
-        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 310.05, "IBC0.DE": 82.12   
+        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 3100000.05, "IBC0.DE": 82.12   
     }
     total_val = 0
     names = []
