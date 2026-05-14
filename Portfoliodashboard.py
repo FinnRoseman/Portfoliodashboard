@@ -136,11 +136,11 @@ fig_shield.add_trace(go.Scatter(
     name='Dein Weg',
     hovertemplate='Jahr: %{x:.1f}<br>Stabilitäts-Faktor: Hoch'
 ))
-fig_shield.add_annotation(x=1, y=y_smooth[10], text="1 Jahr: Starke Schwankungen", 
+fig_shield.add_annotation(x=1, y=y_smooth[10], text="Jahr 1: Starke Schwankungen", 
                           showarrow=True, arrowhead=2, bgcolor="#ff4b4b", font=dict(color="white"))
-fig_shield.add_annotation(x=15, y=y_smooth[180], text="15 Jahre: Historisch sicher", 
+fig_shield.add_annotation(x=15, y=y_smooth[180], text="Jahr 15: Historisch sicher", 
                           showarrow=True, arrowhead=2, bgcolor="#f9a825", font=dict(color="white"))
-fig_shield.add_annotation(x=40, y=y_smooth[-1], text="2068: Volle Glättung", 
+fig_shield.add_annotation(x=40, y=y_smooth[-1], text="Jahr 42: Volle Glättung", 
                           showarrow=True, arrowhead=2, bgcolor="#31DE12", font=dict(color="white"))
 fig_shield.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
