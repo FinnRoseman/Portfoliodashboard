@@ -93,11 +93,12 @@ gesicherte_rente = (current_value * 0.04) / 12
 
 st.markdown(f"""
     <div class="renten-info">
-        <span style='font-size: 0.9rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;'>Gesicherter monatlicher Lebensstandard</span>
+        <span style='font-size: 0.9rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;'>Monatliches Budget in der Rente nach aktuellem Stand</span>
         <h2 style='color: white; margin: 10px 0; font-size: 2.2rem;'>{gesicherte_rente:.2f} €</h2>
-        <p style='font-size: 0.85rem; margin: 0; opacity: 0.9;'>Basierend auf der aktuellen Depot-Substanz</p>
     </div>
     """, unsafe_allow_html=True)
+
+st.markdown("---")
 
 # Asset List (System 2 - Details)
 with st.expander("Portfolio Details anzeigen"):
@@ -105,4 +106,4 @@ with st.expander("Portfolio Details anzeigen"):
     for name in asset_names:
         st.markdown(f"<div style='padding: 5px 0; border-bottom: 1px solid #f0f2f6; font-size: 0.9rem;'>{name}</div>", unsafe_allow_html=True)
 
-st.markdown("<p style='text-align: center; color: #ced4da; font-size: 0.7rem; margin-top: 50px;'>Fokus auf das Ziel. Ignoriere das Rauschen.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #ced4da; font-size: 0.7rem; margin-top: 50px;'>Stay focused</p>", unsafe_allow_html=True)
