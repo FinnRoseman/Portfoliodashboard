@@ -78,7 +78,7 @@ st.markdown("""
 # --- DROP-DOWN MENÜ GANZ OBEN ---
 ziel = st.selectbox(
     "🎯 Ansicht wechseln:", 
-    ["🌴 Altersvorsorge 2068", "💍 Hochzeit in 5 Jahren", "🧱 Hausbau in 12 Jahren"]
+    ["Rente 2068", "Hochzeit 2031", "Haus 2036"]
 )
 
 # --- DYNAMISCHE DATENLOGIK JE NACH ZIEL ---
