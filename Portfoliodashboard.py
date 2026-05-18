@@ -15,7 +15,7 @@ def get_portfolio_data():
         "BRYN.DE": 1.88, 
         "IOC.F": 24.26,
         "IVSD.F": 14.70,
-        "V3PA.DE": 3100.05,
+        "V3PA.DE": 310000.05,
         "IBC0.DE": 82.12   
     }
     total_val = 0
