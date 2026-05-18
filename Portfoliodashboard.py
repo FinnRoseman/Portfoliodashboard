@@ -11,7 +11,7 @@ st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 # Hier definierst du die Zielsummen (ohne monatliche Raten, wie gewünscht)
 GOAL_RENTE = 500000
 GOAL_HOCHZEIT = 20000
-GOAL_HAUSBAU = 100000
+GOAL_HAUSBAU = 200000
 
 @st.cache_data(ttl=3600)
 def get_portfolio_data():
@@ -76,15 +76,14 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- DROP-DOWN MENÜ GANZ OBEN ---
-ziel = st.selectbox(
-    "🎯 Ansicht wechseln:", 
-    ["🌴 Altersvorsorge 2068", "💍 Hochzeit in 5 Jahren", "🧱 Hausbau in 12 Jahren"]
+ziel = st.selectbox( 
+    "Rente 2068", "Hochzeit 2031", "Haus 2036"
 )
 
 # --- DYNAMISCHE DATENLOGIK JE NACH ZIEL ---
 current_value_rente, df_chart_rente = get_portfolio_data()
 
-if ziel == "🌴 Altersvorsorge 2068":
+if ziel == "Rente 2068":
     # 1. Links Oben Card
     card_titel = "Rente 2068"
     progress_pct = min(current_value_rente / GOAL_RENTE, 1.0)
@@ -105,9 +104,8 @@ if ziel == "🌴 Altersvorsorge 2068":
     amplitude_start = 18
     dämpfungs_faktor = 8
     frequenz = 3.5
-    behavioral_tipp = "Kurzfristiges Rauschen ist für deine Rente völlig bedeutungslos. Mit der Zeit (X-Achse) gewinnt die grüne Sicherheits-Zone immer die Oberhand."
 
-elif ziel == "💍 Hochzeit in 5 Jahren":
+elif ziel == "Hochzeit 2031":
     # Fiktive Daten für die Demonstration (Anpassbar)
     current_value_hochzeit = 7000 
     
