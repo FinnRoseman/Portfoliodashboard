@@ -59,7 +59,7 @@ st.markdown("""
     }
     /* Fortschrittsbalken Styling */
     .stProgress > div > div > div > div {
-        background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        background-image: linear-gradient(to right, #4b147d 0%, #9d32f5 100%);
         border-radius: 10px;
         height: 12px;
     }  
