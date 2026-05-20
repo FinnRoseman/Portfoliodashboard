@@ -10,13 +10,8 @@ st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 @st.cache_data(ttl=3600)
 def get_portfolio_data():
     portfolio_config = {
-        "5MVL.DE": 6.58,
-        "JREU.DE": 29.05,
-        "BRYN.DE": 1.88, 
-        "IOC.F": 24.26,
-        "IVSD.F": 14.70,
-        "V3PA.DE": 31.05,
-        "IBC0.DE": 82.12   
+        "5MVL.DE": 6.58, "JREU.DE": 29.05, "BRYN.DE": 1.88, 
+        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
     }
     total_val = 0
     chart_list = []    
@@ -25,24 +20,12 @@ def get_portfolio_data():
             asset = yf.Ticker(ticker)
             price = asset.fast_info['last_price']
             full_name = asset.info.get('longName', ticker)
+            asset_type = asset.info.get('quoteType', 'Sonstige')
+            asset_type = 'ETF' if asset_type == 'ETF' else ('Aktie' if asset_type == 'EQUITY' else 'Sonstige')
             
-            # --- Automatische Typ-Erkennung ---
-            raw_type = asset.info.get('quoteType', 'UNKNOWN')
-            if raw_type == 'ETF':
-                asset_type = 'ETF'
-            elif raw_type == 'EQUITY':
-                asset_type = 'Aktie'
-            else:
-                asset_type = 'Sonstige'
-            # ----------------------------------
-
             wert = price * shares
             total_val += wert
-            chart_list.append({
-                "Asset": full_name, 
-                "Wert": round(wert, 2), 
-                "Typ": asset_type  # Hier wird die neue Spalte angehängt
-            })
+            chart_list.append({"Asset": full_name, "Wert": round(wert, 2), "Typ": asset_type})
         except:
             continue      
     return total_val, pd.DataFrame(chart_list)
@@ -112,53 +95,29 @@ with col1:
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
-        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum() 
+        # Chart 1: Alle Positionen
+        fig1 = px.pie(df_chart, values='Wert', names='Asset', hole=0.6, color_discrete_sequence=px.colors.sequential.dense_r)
         
-        # --- DER TRICK: Beide Charts in EIN Layout zwingen ---
-        from plotly.subplots import make_subplots
-        
-        # Wir erstellen ein Grid: 2 Zeilen (für die Donuts), 1 Spalte
-        fig = make_subplots(
-            rows=2, cols=1,
-            specs=[[{'type': 'domain'}], [{'type': 'domain'}]], # 'domain' hält die Ringe stabil
-            vertical_spacing=0.05
-        )
-        
-        # Donut 1 hinzufügen (Assets)
-        fig.add_trace(go.Pie(
-            labels=df_chart['Asset'], values=df_chart['Wert'], 
-            hole=0.6, 
-            marker=dict(colors=px.colors.sequential.dense_r),
-            name="Assets"
-        ), row=1, col=1)
-        
-        # Donut 2 hinzufügen (Klassen)
-        fig.add_trace(go.Pie(
-            labels=df_typen['Typ'], values=df_typen['Wert'], 
-            hole=0.6, 
-            marker=dict(colors=px.colors.sequential.Purp_r),
-            name="Klassen"
-        ), row=2, col=1)
-        
-        # Layout absolut festlegen
-        fig.update_layout(
-            height=500,  # PASSE DIESEN WERT AN: Das ist die Gesamthöhe in Pixeln. 
-                         # Wenn es zu hoch/tief ist, ändere 500 auf 480 oder 520.
-            margin=dict(t=0, b=0, l=0, r=0),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color="white", size=12),
-            showlegend=True,
-            legend=dict(orientation="v", x=1.1, y=0.5)
-        )
-        
-        # Donuts auf feste Größe erzwingen, damit die Legende sie nicht quetscht
-        fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €", domain=dict(x=[0, 0.45]))
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
+        # Chart 2: Aggregierte Typen
+        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum()
+        fig2 = px.pie(df_typen, values='Wert', names='Typ', hole=0.6, color_discrete_sequence=px.colors.sequential.Purp_r)
+
+        # Gemeinsame Einstellungen für beide
+        for fig in [fig1, fig2]:
+            fig.update_layout(
+                height=250,  # Feste Höhe, damit es bündig mit links abschließt
+                margin=dict(t=0, b=0, l=0, r=0),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font=dict(color="white", size=11),
+                legend=dict(orientation="v", x=0.6, y=0.5) # Legende nach rechts
+            )
+            # WICHTIG: domain=[0, 0.5] zwingt den Ring auf die linke Hälfte
+            fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €", domain=dict(x=[0, 0.55]))
+            st.plotly_chart(fig, use_container_width=True)
+            
     else:
-        st.error("Fehler beim Laden der Chart-Daten.")
+        st.error("Fehler beim Laden der Daten.")
 
 st.write("---")
 st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Zeitfaktor</p>", unsafe_allow_html=True)
