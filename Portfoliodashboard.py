@@ -25,6 +25,13 @@ def get_portfolio_data():
             asset = yf.Ticker(ticker)
             price = asset.fast_info['last_price']
             full_name = asset.info.get('longName', ticker)
+            raw_type = asset.info.get('quoteType', 'UNKNOWN')
+            if raw_type == 'ETF':
+                asset_type = 'ETF'
+            elif raw_type == 'EQUITY':
+                asset_type = 'Aktie'
+            else:
+                asset_type = 'Sonstige'
             wert = price * shares
             total_val += wert
             chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
@@ -97,6 +104,7 @@ with col1:
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
+        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum()
         fig = px.pie(
             df_chart, 
             values='Wert', 
@@ -118,6 +126,27 @@ with col2:
         )
         fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
         st.plotly_chart(fig, use_container_width=True)
+        fig_typen = px.pie(
+            df_typen, 
+            values='Wert', 
+            names='Typ', 
+            hole=0.6,
+            color_discrete_sequence=px.colors.sequential.Purp_r 
+        )     
+        fig_typen.update_layout(
+            margin=dict(t=30, b=0, l=0, r=0),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color="white", size=12),
+            showlegend=True,
+            legend=dict(
+                orientation="v",
+                yanchor="middle", y=0.5,
+                xanchor="left", x=1.1 
+            )
+        )
+        fig_typen.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
+        st.plotly_chart(fig_typen, use_container_width=True)
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
 
