@@ -34,7 +34,7 @@ def get_portfolio_data():
                 asset_type = 'Sonstige'
             wert = price * shares
             total_val += wert
-            chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
+            chart_list.append({"Asset": full_name, "Wert": round(wert, 2), "Typ": asset_type})
         except:
             continue      
     return total_val, pd.DataFrame(chart_list)
