@@ -25,9 +25,24 @@ def get_portfolio_data():
             asset = yf.Ticker(ticker)
             price = asset.fast_info['last_price']
             full_name = asset.info.get('longName', ticker)
+            
+            # --- Automatische Typ-Erkennung ---
+            raw_type = asset.info.get('quoteType', 'UNKNOWN')
+            if raw_type == 'ETF':
+                asset_type = 'ETF'
+            elif raw_type == 'EQUITY':
+                asset_type = 'Aktie'
+            else:
+                asset_type = 'Sonstige'
+            # ----------------------------------
+
             wert = price * shares
             total_val += wert
-            chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
+            chart_list.append({
+                "Asset": full_name, 
+                "Wert": round(wert, 2), 
+                "Typ": asset_type  # Hier wird die neue Spalte angehängt
+            })
         except:
             continue      
     return total_val, pd.DataFrame(chart_list)
