@@ -104,7 +104,10 @@ with col1:
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
-        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum()
+        # Daten für den zweiten Chart zusammenrechnen
+        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum() 
+        
+        # --- 1. CHART (EINZELPOSITIONEN) ---
         fig = px.pie(
             df_chart, 
             values='Wert', 
@@ -113,7 +116,8 @@ with col2:
             color_discrete_sequence=px.colors.sequential.dense_r
         )     
         fig.update_layout(
-            margin=dict(t=30, b=0, l=0, r=0),
+            height=260, # Feste Höhe für Bündigkeit mit linker Spalte
+            margin=dict(t=10, b=10, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="white", size=12),
@@ -121,20 +125,27 @@ with col2:
             legend=dict(
                 orientation="v",
                 yanchor="middle", y=0.5,
-                xanchor="left", x=1.1 
+                xanchor="left", x=0.5 # Legende startet exakt in der Mitte
             )
         )
-        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
+        # DER TRICK: Donut wird auf die linken 45% des Platzes gezwungen
+        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.45]))     
         st.plotly_chart(fig, use_container_width=True)
+        
+        
+        # --- 2. CHART (ASSET-KLASSEN) ---
+        st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-top: 10px;'>Verteilung nach Asset-Klasse</p>", unsafe_allow_html=True)
+        
         fig_typen = px.pie(
             df_typen, 
             values='Wert', 
             names='Typ', 
             hole=0.6,
-            color_discrete_sequence=px.colors.sequential.Purp_r 
+            color_discrete_sequence=px.colors.sequential.Purp_r
         )     
         fig_typen.update_layout(
-            margin=dict(t=30, b=0, l=0, r=0),
+            height=260, 
+            margin=dict(t=10, b=10, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="white", size=12),
@@ -142,11 +153,12 @@ with col2:
             legend=dict(
                 orientation="v",
                 yanchor="middle", y=0.5,
-                xanchor="left", x=1.1 
+                xanchor="left", x=0.5
             )
         )
-        fig_typen.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
+        fig_typen.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.45]))     
         st.plotly_chart(fig_typen, use_container_width=True)
+
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
 
