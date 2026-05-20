@@ -25,16 +25,9 @@ def get_portfolio_data():
             asset = yf.Ticker(ticker)
             price = asset.fast_info['last_price']
             full_name = asset.info.get('longName', ticker)
-            raw_type = asset.info.get('quoteType', 'UNKNOWN')
-            if raw_type == 'ETF':
-                asset_type = 'ETF'
-            elif raw_type == 'EQUITY':
-                asset_type = 'Aktie'
-            else:
-                asset_type = 'Sonstige'
             wert = price * shares
             total_val += wert
-            chart_list.append({"Asset": full_name, "Wert": round(wert, 2), "Typ": asset_type})
+            chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
         except:
             continue      
     return total_val, pd.DataFrame(chart_list)
@@ -104,41 +97,26 @@ with col1:
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
-        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum() 
-        
-        # Wir erstellen ein Subplot-Layout: 2 Zeilen, 1 Spalte
-        from plotly.subplots import make_subplots
-        fig = make_subplots(
-            rows=2, cols=1, 
-            specs=[[{'type': 'pie'}], [{'type': 'pie'}]],
-            vertical_spacing=0.1
-        )
-        
-        # Chart 1 hinzufügen
-        fig.add_trace(go.Pie(
-            labels=df_chart['Asset'], values=df_chart['Wert'], 
-            hole=0.6, marker=dict(colors=px.colors.sequential.dense_r)
-        ), row=1, col=1)
-        
-        # Chart 2 hinzufügen
-        fig.add_trace(go.Pie(
-            labels=df_typen['Typ'], values=df_typen['Wert'], 
-            hole=0.6, marker=dict(colors=px.colors.sequential.Purp_r)
-        ), row=2, col=1)
-        
-        # Layout erzwingen
+        fig = px.pie(
+            df_chart, 
+            values='Wert', 
+            names='Asset', 
+            hole=0.6,
+            color_discrete_sequence=px.colors.sequential.dense_r
+        )     
         fig.update_layout(
-            height=500, # Gesamthöhe für beide Donuts
-            margin=dict(t=20, b=20, l=0, r=0),
+            margin=dict(t=30, b=0, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="white", size=12),
             showlegend=True,
-            legend=dict(orientation="v", x=1.05, y=0.5)
+            legend=dict(
+                orientation="v",
+                yanchor="middle", y=0.5,
+                xanchor="left", x=1.1 
+            )
         )
-        # Donuts auf feste Größe erzwingen
-        fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €")
-        
+        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
@@ -196,6 +174,5 @@ fig_shield.update_layout(
     showlegend=False
 )
 st.plotly_chart(fig_shield, use_container_width=True)
-
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #454A4F !important; font-size: 0.7rem;'>Stay focused ・ Stay invested ・ Keep investing ・ Never change a running system</p>", unsafe_allow_html=True)
