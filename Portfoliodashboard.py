@@ -97,27 +97,51 @@ with col1:
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
-        fig = px.pie(
-            df_chart, 
-            values='Wert', 
-            names='Asset', 
-            hole=0.6,
-            color_discrete_sequence=px.colors.sequential.dense_r
-        )     
+        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum() 
+        
+        # --- DER TRICK: Beide Charts in EIN Layout zwingen ---
+        from plotly.subplots import make_subplots
+        
+        # Wir erstellen ein Grid: 2 Zeilen (für die Donuts), 1 Spalte
+        fig = make_subplots(
+            rows=2, cols=1,
+            specs=[[{'type': 'domain'}], [{'type': 'domain'}]], # 'domain' hält die Ringe stabil
+            vertical_spacing=0.05
+        )
+        
+        # Donut 1 hinzufügen (Assets)
+        fig.add_trace(go.Pie(
+            labels=df_chart['Asset'], values=df_chart['Wert'], 
+            hole=0.6, 
+            marker=dict(colors=px.colors.sequential.dense_r),
+            name="Assets"
+        ), row=1, col=1)
+        
+        # Donut 2 hinzufügen (Klassen)
+        fig.add_trace(go.Pie(
+            labels=df_typen['Typ'], values=df_typen['Wert'], 
+            hole=0.6, 
+            marker=dict(colors=px.colors.sequential.Purp_r),
+            name="Klassen"
+        ), row=2, col=1)
+        
+        # Layout absolut festlegen
         fig.update_layout(
-            margin=dict(t=30, b=0, l=0, r=0),
+            height=500,  # PASSE DIESEN WERT AN: Das ist die Gesamthöhe in Pixeln. 
+                         # Wenn es zu hoch/tief ist, ändere 500 auf 480 oder 520.
+            margin=dict(t=0, b=0, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="white", size=12),
             showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="middle", y=0.5,
-                xanchor="left", x=1.1 
-            )
+            legend=dict(orientation="v", x=1.1, y=0.5)
         )
-        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
+        
+        # Donuts auf feste Größe erzwingen, damit die Legende sie nicht quetscht
+        fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €", domain=dict(x=[0, 0.45]))
+        
         st.plotly_chart(fig, use_container_width=True)
+        
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
 
