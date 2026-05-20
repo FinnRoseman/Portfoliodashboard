@@ -96,39 +96,35 @@ with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     
     if not df_chart.empty:
-        # Daten vorbereiten
         df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum()
         
-        # Liste mit den Daten für die zwei Charts
-        chart_data = [
-            {"df": df_chart, "names": "Asset", "values": "Wert", "colors": px.colors.sequential.dense_r},
-            {"df": df_typen, "names": "Typ", "values": "Wert", "colors": px.colors.sequential.Purp_r}
-        ]
+        # 1. Konfiguration für beide Charts definieren
+        # Diese Werte müssen für BEIDE identisch sein
+        layout_settings = dict(
+            height=250, # Das ist die Höhe in Pixeln
+            margin=dict(t=0, b=0, l=0, r=0), # Keine Abstände
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color="white", size=12),
+            showlegend=True,
+            legend=dict(x=0.6, y=0.5) # Legende immer an der gleichen Stelle
+        )
         
-        # Beide Charts identisch zeichnen
-        for data in chart_data:
-            fig = go.Figure(data=[go.Pie(
-                labels=data["df"][data["names"]], 
-                values=data["df"][data["values"]], 
-                hole=0.6,
-                marker=dict(colors=data["colors"]),
-                # WICHTIG: Die Domain zwingt den Donut in die linke 45% Box
-                domain=dict(x=[0, 0.45])
-            )])
-            
-            fig.update_layout(
-                height=250, # Feste Höhe (kannst du minimal anpassen, falls nötig)
-                margin=dict(t=10, b=10, l=0, r=0),
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color="white", size=11),
-                showlegend=True,
-                # Legende beginnt erst rechts neben der 50%-Marke
-                legend=dict(x=0.55, y=0.5, font=dict(size=10)) 
-            )
-            fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €")
-            
-            st.plotly_chart(fig, use_container_width=True)
+        # Funktion um die Charts zu erstellen
+        def create_donut(df, values, names, colors):
+            fig = px.pie(df, values=values, names=names, hole=0.6, color_discrete_sequence=colors)
+            fig.update_layout(**layout_settings)
+            # WICHTIG: Domain erzwingt, dass der Ring immer nur 50% der Breite einnimmt
+            fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €", domain=dict(x=[0, 0.5]))
+            return fig
+
+        # Chart 1
+        fig1 = create_donut(df_chart, 'Wert', 'Asset', px.colors.sequential.dense_r)
+        st.plotly_chart(fig1, use_container_width=True)
+        
+        # Chart 2
+        fig2 = create_donut(df_typen, 'Wert', 'Typ', px.colors.sequential.Purp_r)
+        st.plotly_chart(fig2, use_container_width=True)
             
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
