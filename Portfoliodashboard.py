@@ -11,7 +11,7 @@ st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 def get_portfolio_data():
     portfolio_config = {
         "5MVL.DE": 6.58,
-        "XD9U.DE": 9.83,
+        "JREU.DE": 29.05,
         "BRYN.DE": 1.88, 
         "IOC.F": 24.26,
         "IVSD.F": 14.70,
