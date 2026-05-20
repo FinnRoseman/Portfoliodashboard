@@ -104,7 +104,6 @@ with col1:
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
     if not df_chart.empty:
-        # Daten für den zweiten Chart zusammenrechnen
         df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum() 
         
         # --- 1. CHART (EINZELPOSITIONEN) ---
@@ -116,7 +115,7 @@ with col2:
             color_discrete_sequence=px.colors.sequential.dense_r
         )     
         fig.update_layout(
-            height=260, # Feste Höhe für Bündigkeit mit linker Spalte
+            height=230, # Feste Höhe für Bündigkeit
             margin=dict(t=10, b=10, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
@@ -125,11 +124,11 @@ with col2:
             legend=dict(
                 orientation="v",
                 yanchor="middle", y=0.5,
-                xanchor="left", x=0.5 # Legende startet exakt in der Mitte
+                xanchor="left", x=0.45 # Legende startet fest bei 45% der Breite
             )
         )
-        # DER TRICK: Donut wird auf die linken 45% des Platzes gezwungen
-        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.45]))     
+        # DER TRICK: Donut wird hart auf die linken 40% des Platzes gezwungen
+        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.40]))     
         st.plotly_chart(fig, use_container_width=True)
         
         
@@ -144,7 +143,7 @@ with col2:
             color_discrete_sequence=px.colors.sequential.Purp_r
         )     
         fig_typen.update_layout(
-            height=260, 
+            height=230, # Exakt gleiche feste Höhe wie oben
             margin=dict(t=10, b=10, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
@@ -153,10 +152,11 @@ with col2:
             legend=dict(
                 orientation="v",
                 yanchor="middle", y=0.5,
-                xanchor="left", x=0.5
+                xanchor="left", x=0.45 # Legende auf gleicher Höhe wie oben
             )
         )
-        fig_typen.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.45]))     
+        # DER TRICK: Zweiter Donut wird ebenfalls auf exakt 40% gezwungen
+        fig_typen.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.40]))     
         st.plotly_chart(fig_typen, use_container_width=True)
 
     else:
