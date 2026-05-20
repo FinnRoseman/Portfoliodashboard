@@ -94,30 +94,44 @@ with col1:
         """, unsafe_allow_html=True)
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
+    
     if not df_chart.empty:
-        # Chart 1: Alle Positionen
-        fig1 = px.pie(df_chart, values='Wert', names='Asset', hole=0.6, color_discrete_sequence=px.colors.sequential.dense_r)
-        
-        # Chart 2: Aggregierte Typen
+        # Daten vorbereiten
         df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum()
-        fig2 = px.pie(df_typen, values='Wert', names='Typ', hole=0.6, color_discrete_sequence=px.colors.sequential.Purp_r)
-
-        # Gemeinsame Einstellungen für beide
-        for fig in [fig1, fig2]:
+        
+        # Liste mit den Daten für die zwei Charts
+        chart_data = [
+            {"df": df_chart, "names": "Asset", "values": "Wert", "colors": px.colors.sequential.dense_r},
+            {"df": df_typen, "names": "Typ", "values": "Wert", "colors": px.colors.sequential.Purp_r}
+        ]
+        
+        # Beide Charts identisch zeichnen
+        for data in chart_data:
+            fig = go.Figure(data=[go.Pie(
+                labels=data["df"][data["names"]], 
+                values=data["df"][data["values"]], 
+                hole=0.6,
+                marker=dict(colors=data["colors"]),
+                # WICHTIG: Die Domain zwingt den Donut in die linke 45% Box
+                domain=dict(x=[0, 0.45])
+            )])
+            
             fig.update_layout(
-                height=250,  # Feste Höhe, damit es bündig mit links abschließt
-                margin=dict(t=0, b=0, l=0, r=0),
+                height=250, # Feste Höhe (kannst du minimal anpassen, falls nötig)
+                margin=dict(t=10, b=10, l=0, r=0),
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
                 font=dict(color="white", size=11),
-                legend=dict(orientation="v", x=0.6, y=0.5) # Legende nach rechts
+                showlegend=True,
+                # Legende beginnt erst rechts neben der 50%-Marke
+                legend=dict(x=0.55, y=0.5, font=dict(size=10)) 
             )
-            # WICHTIG: domain=[0, 0.5] zwingt den Ring auf die linke Hälfte
-            fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €", domain=dict(x=[0, 0.55]))
+            fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €")
+            
             st.plotly_chart(fig, use_container_width=True)
             
     else:
-        st.error("Fehler beim Laden der Daten.")
+        st.error("Fehler beim Laden der Chart-Daten.")
 
 st.write("---")
 st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Zeitfaktor</p>", unsafe_allow_html=True)
