@@ -106,59 +106,40 @@ with col2:
     if not df_chart.empty:
         df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum() 
         
-        # --- 1. CHART (EINZELPOSITIONEN) ---
-        fig = px.pie(
-            df_chart, 
-            values='Wert', 
-            names='Asset', 
-            hole=0.6,
-            color_discrete_sequence=px.colors.sequential.dense_r
-        )     
+        # Wir erstellen ein Subplot-Layout: 2 Zeilen, 1 Spalte
+        from plotly.subplots import make_subplots
+        fig = make_subplots(
+            rows=2, cols=1, 
+            specs=[[{'type': 'pie'}], [{'type': 'pie'}]],
+            vertical_spacing=0.1
+        )
+        
+        # Chart 1 hinzufügen
+        fig.add_trace(go.Pie(
+            labels=df_chart['Asset'], values=df_chart['Wert'], 
+            hole=0.6, marker=dict(colors=px.colors.sequential.dense_r)
+        ), row=1, col=1)
+        
+        # Chart 2 hinzufügen
+        fig.add_trace(go.Pie(
+            labels=df_typen['Typ'], values=df_typen['Wert'], 
+            hole=0.6, marker=dict(colors=px.colors.sequential.Purp_r)
+        ), row=2, col=1)
+        
+        # Layout erzwingen
         fig.update_layout(
-            height=230, # Feste Höhe für Bündigkeit
-            margin=dict(t=10, b=10, l=0, r=0),
+            height=500, # Gesamthöhe für beide Donuts
+            margin=dict(t=20, b=20, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="white", size=12),
             showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="middle", y=0.5,
-                xanchor="left", x=0.45 # Legende startet fest bei 45% der Breite
-            )
+            legend=dict(orientation="v", x=1.05, y=0.5)
         )
-        # DER TRICK: Donut wird hart auf die linken 40% des Platzes gezwungen
-        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.40]))     
+        # Donuts auf feste Größe erzwingen
+        fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €")
+        
         st.plotly_chart(fig, use_container_width=True)
-        
-        
-        # --- 2. CHART (ASSET-KLASSEN) ---
-        st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-top: 10px;'>Verteilung nach Asset-Klasse</p>", unsafe_allow_html=True)
-        
-        fig_typen = px.pie(
-            df_typen, 
-            values='Wert', 
-            names='Typ', 
-            hole=0.6,
-            color_discrete_sequence=px.colors.sequential.Purp_r
-        )     
-        fig_typen.update_layout(
-            height=230, # Exakt gleiche feste Höhe wie oben
-            margin=dict(t=10, b=10, l=0, r=0),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color="white", size=12),
-            showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="middle", y=0.5,
-                xanchor="left", x=0.45 # Legende auf gleicher Höhe wie oben
-            )
-        )
-        # DER TRICK: Zweiter Donut wird ebenfalls auf exakt 40% gezwungen
-        fig_typen.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}", domain=dict(x=[0, 0.40]))     
-        st.plotly_chart(fig_typen, use_container_width=True)
-
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
 
