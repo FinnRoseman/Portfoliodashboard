@@ -10,8 +10,13 @@ st.set_page_config(page_title="Behavioral Portfolio Tracker", layout="wide")
 @st.cache_data(ttl=3600)
 def get_portfolio_data():
     portfolio_config = {
-        "5MVL.DE": 6.58, "JREU.DE": 29.05, "BRYN.DE": 1.88, 
-        "IOC.F": 24.26, "IVSD.F": 14.70, "V3PA.DE": 31.05, "IBC0.DE": 82.12   
+        "5MVL.DE": 6.58,
+        "JREU.DE": 29.05,
+        "BRYN.DE": 1.88, 
+        "IOC.F": 24.26,
+        "IVSD.F": 14.70,
+        "V3PA.DE": 31.05,
+        "IBC0.DE": 82.12   
     }
     total_val = 0
     chart_list = []    
@@ -20,12 +25,9 @@ def get_portfolio_data():
             asset = yf.Ticker(ticker)
             price = asset.fast_info['last_price']
             full_name = asset.info.get('longName', ticker)
-            asset_type = asset.info.get('quoteType', 'Sonstige')
-            asset_type = 'ETF' if asset_type == 'ETF' else ('Aktie' if asset_type == 'EQUITY' else 'Sonstige')
-            
             wert = price * shares
             total_val += wert
-            chart_list.append({"Asset": full_name, "Wert": round(wert, 2), "Typ": asset_type})
+            chart_list.append({"Asset": full_name, "Wert": round(wert, 2)})
         except:
             continue      
     return total_val, pd.DataFrame(chart_list)
@@ -94,38 +96,28 @@ with col1:
         """, unsafe_allow_html=True)
 with col2:
     st.markdown("<p style='color: #6c757d !important; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;'>Asset Verteilung</p>", unsafe_allow_html=True)   
-    
     if not df_chart.empty:
-        df_typen = df_chart.groupby('Typ', as_index=False)['Wert'].sum()
-        
-        # 1. Konfiguration für beide Charts definieren
-        # Diese Werte müssen für BEIDE identisch sein
-        layout_settings = dict(
-            height=250, # Das ist die Höhe in Pixeln
-            margin=dict(t=0, b=0, l=0, r=0), # Keine Abstände
+        fig = px.pie(
+            df_chart, 
+            values='Wert', 
+            names='Asset', 
+            hole=0.6,
+            color_discrete_sequence=px.colors.sequential.dense_r
+        )     
+        fig.update_layout(
+            margin=dict(t=30, b=0, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="white", size=12),
             showlegend=True,
-            legend=dict(x=0.6, y=0.5) # Legende immer an der gleichen Stelle
+            legend=dict(
+                orientation="v",
+                yanchor="middle", y=0.5,
+                xanchor="left", x=1.1 
+            )
         )
-        
-        # Funktion um die Charts zu erstellen
-        def create_donut(df, values, names, colors):
-            fig = px.pie(df, values=values, names=names, hole=0.6, color_discrete_sequence=colors)
-            fig.update_layout(**layout_settings)
-            # WICHTIG: Domain erzwingt, dass der Ring immer nur 50% der Breite einnimmt
-            fig.update_traces(textinfo='none', hovertemplate="%{label}: %{value:,.2f} €", domain=dict(x=[0, 0.5]))
-            return fig
-
-        # Chart 1
-        fig1 = create_donut(df_chart, 'Wert', 'Asset', px.colors.sequential.dense_r)
-        st.plotly_chart(fig1, use_container_width=True)
-        
-        # Chart 2
-        fig2 = create_donut(df_typen, 'Wert', 'Typ', px.colors.sequential.Purp_r)
-        st.plotly_chart(fig2, use_container_width=True)
-            
+        fig.update_traces(textinfo='none', hovertemplate="<b>%{label}</b><br>%{value:,.2f} €<br>%{percent}")     
+        st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Fehler beim Laden der Chart-Daten.")
 
